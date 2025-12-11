@@ -15,14 +15,20 @@ A custom register communication system implementation for PCILeech FPGA, focusin
 ## Quick Start
 
 ```bash
-# 1. Hardware Connection
+# 1. Replace file pcileech_fifo.sv file
+Replace the pcileech_fifo.sv file
+
+# 2. Compile
+Compile software and hardware projects
+
+# 3. Hardware Connection
 Connect PCILeech FPGA device via USB 3.0
 
-# 2. DNA Activation (Required First!)
+# 4. DNA Activation (Required First!)
 cd demo/ACTIVATOR_DEMO/x64/Release
 activator.exe
 
-# 3. Run Register Demo
+# 5. Run Register Demo
 cd demo/CUSTOMREGS_DEMO/x64/Release
 demo.exe
 ```
