@@ -1,0 +1,90 @@
+# Build directories
+build/
+out/
+bin/
+obj/
+software/LeechCore-master/files/
+activator/activator/
+
+
+# Claude files
+.claude
+
+# IDE files
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+.vscode/
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.pdb
+*.ilk
+
+# FPGA generated files
+*.xpr
+*.cache/
+*.hw/
+*.runs/
+*.sim/
+*.ip_user_files/
+*.gen/
+*.log
+*.jou
+*.wdb
+*.pb
+*.dcp
+*.bit
+*.bin
+*.mcs
+*.prm
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+.DS_Store
+Thumbs.db
+*.png
+
+# Python
+__pycache__/
+*.pyc
+
+# Dependencies
+node_modules/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Output files
+*.rpt
+*.summary
+
+# Markdown files
+PLAN.md
+PLAN_ACT.md
+
+# Claude documentation files (all directories)
+CLAUDE.md
+**/CLAUDE.md
+
+# dll files
+!test/FTD3XX.dll
+!test/leechcore.dll
+!activator/FTD3XX.dll
+!activator/leechcore.dll
+!software/lc-xhci/runtime/FTD3XX.dll
+!software/lc-xhci/runtime/leechcore.dll
