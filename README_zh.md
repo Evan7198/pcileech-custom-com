@@ -15,14 +15,20 @@
 ## 快速开始
 
 ```bash
-# 1. 硬件连接
+# 1.替换文件
+替换pcileech_fifo.sv文件
+
+# 2. 编译
+编译软件和硬件项目
+
+# 3. 硬件连接
 通过 USB 3.0 连接 PCILeech FPGA 设备
 
-# 2. DNA 激活（必须先执行！）
+# 4. DNA 激活（必须先执行！）
 cd demo/ACTIVATOR_DEMO/x64/Release
 activator.exe
 
-# 3. 运行寄存器演示
+# 5. 运行寄存器演示
 cd demo/CUSTOMREGS_DEMO/x64/Release
 demo.exe
 ```
