@@ -47,38 +47,6 @@ cd ACTIVATOR_DEMO/x64/Release/
 activator.exe
 ```
 
-**Expected Output**:
-```
-========================================
-  Step 1: Connecting to FPGA Device
-========================================
-[INFO] Initializing LeechCore...
-[PASS] FPGA device connected successfully
-
-========================================
-  Step 2: Reading FPGA DNA
-========================================
-[PASS] FPGA DNA = 0x0038842957baa85c
-
-========================================
-  Step 3: DNA Verification
-========================================
-[INFO] Starting verification process...
-[PASS] DNA verification successful
-
-========================================
-  Step 4: Checking TLP Control Status
-========================================
-[PASS] TLP control enabled (Register 29 = 0x00000001)
-
-========================================
-  Step 5: Activation Summary
-========================================
-FPGA DNA: 0x0038842957baa85c
-TLP Status: Enabled
-[SUCCESS] DNA activation successful! Ready for register operations
-```
-
 ---
 
 #### Step 2: Run Custom Register Demo
