@@ -694,7 +694,7 @@ endmodule
 module dna_check (
     input  clk,
     output i_enable,           // Enable signal (high when DNA read complete)
-    output [56:0] GetDNA       // 57-bit DNA value output
+    output reg  [56:0] GetDNA  // 57-bit DNA value output
 );
 
     reg         running;
@@ -716,7 +716,7 @@ module dna_check (
         read_dna    <= 0;
         dna_ready   <= 0;
     end
-
+    
     DNA_PORT #(
         .SIM_DNA_VALUE  (57'h0123456789ABCDE)   // Simulation DNA value
     ) dna (
@@ -747,12 +747,12 @@ module dna_check (
                     running <= 0;
                     dna_shift <= 0;
                     dna_ready <= 1;         // DNA read complete
+                    GetDNA <= {read_dna[55:0], dna_bit}; //fix:update DNA value when dna_ready is setted true.
                 end
             end
         end
     end
 
-    assign GetDNA   = read_dna;
     assign i_enable = dna_ready;            // Enable after DNA read complete
 
 endmodule
