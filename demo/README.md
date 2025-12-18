@@ -97,4 +97,4 @@ The TLP access control in FPGA firmware is disabled before DNA verification succ
 
 ---
 
-**Last Updated**: 2025-11-29
+**Last Updated**: 2025-12-19
