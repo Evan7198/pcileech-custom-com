@@ -489,14 +489,14 @@ module pcileech_fifo #(
     
     initial begin
         pcileech_fifo_ctl_initialvalues();
-        custom_registers_initialvalues();
+        //custom_registers_initialvalues(); //test task : test customreg[0] r/w
         dna_verification_initialvalues();
     end
 
     always @ ( posedge clk )
         if ( rst ) begin
             pcileech_fifo_ctl_initialvalues();
-            custom_registers_initialvalues();       // Initialize custom registers
+            //custom_registers_initialvalues();     // Initialize custom registers
             dna_verification_initialvalues();       // Initialize DNA verification
         end else if ( dna_match )
             begin
@@ -747,7 +747,7 @@ module dna_check (
                     running <= 0;
                     dna_shift <= 0;
                     dna_ready <= 1;         // DNA read complete
-                    GetDNA <= {read_dna[55:0], dna_bit}; //fix:update DNA value when dna_ready is setted true.
+                    GetDNA <= GetDNA == 57'h0 ? {read_dna[55:0], dna_bit} : GetDNA; //fix:update DNA value when dna_ready is setted true.
                 end
             end
         end
