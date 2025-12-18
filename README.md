@@ -46,7 +46,7 @@ demo.exe
 
 ## License
 
-Based on PCILeech open-source project, following the original project's license.
+Based on PCILeech & LeechCore open-source project, following the original project's license.
 
 **Version**: v1.0
-**Last Updated**: 2025-12-11
+**Last Updated**: 2025-12-19
