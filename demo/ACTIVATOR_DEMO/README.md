@@ -110,4 +110,4 @@ Runtime required files:
 
 ---
 
-**Version**: v1.0 | **Last Updated**: 2025-11-28
+**Version**: v1.0 | **Last Updated**: 2025-12-19
