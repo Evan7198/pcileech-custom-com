@@ -13,6 +13,10 @@
  * 注意事项：
  * ⚠️ 必须先执行 DNA 激活，再进行寄存器操作！
  * 原因：FPGA 固件中的 TLP 访问控制在 DNA 验证成功前处于禁用状态
+ * 
+ * 环境设置需求文件：
+ * - leechcore.h
+ * - leechcore.lib
  */
 
 #ifdef _WIN32
@@ -21,7 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../software/LeechCore-master/includes/leechcore.h"
+#include <stdint.h>
 
 // ============================================================================
 // 宏定义与常量
@@ -97,9 +101,43 @@ bool read_custom_register(HANDLE hLC, BYTE regNum, DWORD* pValue) {
 bool write_custom_register(HANDLE hLC, BYTE regNum, DWORD value) {
     return LcCommand(hLC, LC_CMD_FPGA_CUSTOM_WRITE_REG(regNum), sizeof(DWORD), (PBYTE)&value, NULL, NULL);
 }
+// ============================================================================
+// 步骤1: 连接 FPGA
+// ============================================================================
+
+/**
+ * 连接 FPGA 设备并获取句柄
+ *
+ * 说明：
+ * - 获取 LeechCore 句柄
+ *
+ * @param phLC 输出 LeechCore 句柄
+ * @return     成功返回 true，失败返回 false
+ */
+bool step1_get_lchandle(HANDLE* phLC) {
+    print_section_header("步骤1: 连接FPGA");
+    
+    LC_CONFIG cfg = { 0 };
+
+    // 初始化 LeechCore 配置
+    printf("[INFO] 正在初始化 LeechCore...\n");
+    cfg.dwVersion = LC_CONFIG_VERSION;
+    cfg.szDevice[0] = 'f'; cfg.szDevice[1] = 'p'; cfg.szDevice[2] = 'g'; cfg.szDevice[3] = 'a';
+    
+    // 创建 LeechCore 连接
+    printf("[INFO] 正在连接 FPGA 设备...\n");
+    *phLC = LcCreateEx(&cfg, NULL);
+    if (!*phLC) {
+        printf("[FAIL] 无法连接到 FPGA 设备\n");
+        printf("       请检查：1) FPGA 是否已连接  2) FTD3XX 驱动是否已安装\n");
+        return false;
+    }
+    printf("[PASS] FPGA 设备连接成功\n");
+    return true;
+}
 
 // ============================================================================
-// 步骤1: DNA 激活（必须先执行）
+// 步骤2: DNA 激活
 // ============================================================================
 
 /**
@@ -114,26 +152,10 @@ bool write_custom_register(HANDLE hLC, BYTE regNum, DWORD value) {
  * @param phLC 输出 LeechCore 句柄
  * @return     成功返回 true，失败返回 false
  */
-bool step1_activate_dna(HANDLE* phLC) {
-    print_section_header("步骤1: FPGA DNA 激活");
-
-    LC_CONFIG cfg = { 0 };
+bool step2_activate_dna(HANDLE hLC) {
+    print_section_header("步骤2: FPGA DNA 激活");
+    
     DWORD dna_low, dna_high, tlp_status;
-
-    // 初始化 LeechCore 配置
-    printf("[INFO] 正在初始化 LeechCore...\n");
-    cfg.dwVersion = LC_CONFIG_VERSION;
-    cfg.szDevice[0] = 'f'; cfg.szDevice[1] = 'p'; cfg.szDevice[2] = 'g'; cfg.szDevice[3] = 'a';
-
-    // 创建 LeechCore 连接
-    printf("[INFO] 正在连接 FPGA 设备...\n");
-    *phLC = LcCreateEx(&cfg, NULL);
-    if (!*phLC) {
-        printf("[FAIL] 无法连接到 FPGA 设备\n");
-        printf("       请检查：1) FPGA 是否已连接  2) FTD3XX 驱动是否已安装\n");
-        return false;
-    }
-    printf("[PASS] FPGA 设备连接成功\n");
 
     // 读取 FPGA DNA 值
     printf("[INFO] 正在读取 FPGA DNA...\n");
@@ -170,7 +192,7 @@ bool step1_activate_dna(HANDLE* phLC) {
 }
 
 // ============================================================================
-// 步骤2: 基础寄存器读写
+// 步骤3: 基础寄存器读写
 // ============================================================================
 
 /**
@@ -184,8 +206,8 @@ bool step1_activate_dna(HANDLE* phLC) {
  * @param hLC LeechCore 句柄
  * @return    成功返回 true，失败返回 false
  */
-bool step2_basic_register_rw(HANDLE hLC) {
-    print_section_header("步骤2: 基础寄存器读写");
+bool step3_basic_register_rw(HANDLE hLC) {
+    print_section_header("步骤3: 基础寄存器读写");
 
     DWORD value;
 
@@ -224,7 +246,7 @@ bool step2_basic_register_rw(HANDLE hLC) {
 }
 
 // ============================================================================
-// 步骤3: 多寄存器独立性验证
+// 步骤4: 多寄存器独立性验证
 // ============================================================================
 
 /**
@@ -237,8 +259,8 @@ bool step2_basic_register_rw(HANDLE hLC) {
  * @param hLC LeechCore 句柄
  * @return    成功返回 true，失败返回 false
  */
-bool step3_multi_register_test(HANDLE hLC) {
-    print_section_header("步骤3: 多寄存器独立性测试");
+bool step4_multi_register_test(HANDLE hLC) {
+    print_section_header("步骤4: 多寄存器独立性测试");
 
     // 测试寄存器组（避开 DNA 验证寄存器 24-31）
     BYTE test_regs[] = { 0, 5, 10, 23 };
@@ -283,7 +305,7 @@ bool step3_multi_register_test(HANDLE hLC) {
 }
 
 // ============================================================================
-// 步骤4: DNA 验证寄存器访问
+// 步骤5: DNA 验证寄存器访问
 // ============================================================================
 
 /**
@@ -301,8 +323,8 @@ bool step3_multi_register_test(HANDLE hLC) {
  *
  * @param hLC LeechCore 句柄
  */
-void step4_dna_register_access(HANDLE hLC) {
-    print_section_header("步骤4: DNA 验证寄存器访问");
+void step5_dna_register_access(HANDLE hLC) {
+    print_section_header("步骤5: DNA 验证寄存器访问");
 
     DWORD value;
 
@@ -354,28 +376,33 @@ int main(int argc, char* argv[]) {
     printf("  通用寄存器: 0-23 (需DNA激活后才可读写)\n");
     printf("  DNA寄存器:  24-31 (DNA验证专用)\n");
     printf("====================================================\n");
-
-    // 步骤1: DNA 激活（必须先执行）
-    if (!step1_activate_dna(&hLC)) {
+    // 步骤1: 连接FPGA
+    if (!step1_get_lchandle(&hLC)){
+        printf("\n[错误] 无法获取句柄，程序退出\n");
+        return 1;
+    }
+    
+    // 步骤2: DNA 激活（必须先执行）
+    if (!step2_activate_dna(hLC)) {
         printf("\n[错误] DNA 激活失败，程序退出\n");
         return 1;
     }
 
-    // 步骤2: 基础寄存器读写
-    if (!step2_basic_register_rw(hLC)) {
+    // 步骤3: 基础寄存器读写
+    if (!step3_basic_register_rw(hLC)) {
         printf("\n[错误] 基础寄存器读写测试失败\n");
         exit_code = 1;
         goto cleanup;
     }
 
-    // 步骤3: 多寄存器测试
-    if (!step3_multi_register_test(hLC)) {
+    // 步骤4: 多寄存器测试
+    if (!step4_multi_register_test(hLC)) {
         printf("\n[警告] 多寄存器独立性测试存在问题\n");
         // 不退出，继续演示
     }
 
-    // 步骤4: DNA 寄存器访问
-    step4_dna_register_access(hLC);
+    // 步骤5: DNA 寄存器访问
+    step5_dna_register_access(hLC);
 
     // 成功完成
     printf("\n");
