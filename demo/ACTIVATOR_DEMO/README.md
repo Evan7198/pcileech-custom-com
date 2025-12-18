@@ -2,6 +2,8 @@
 
 # PCILeech FPGA DNA Activator - DEMO
 
+⚠️This project has not been compiled or tested. If there are any errors, please fix them yourself.
+
 ### Introduction
 
 This is a **simple DEMO program** demonstrating how to use LeechCore API for FPGA DNA verification and activation.
