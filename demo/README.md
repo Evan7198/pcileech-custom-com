@@ -56,34 +56,6 @@ cd CUSTOMREGS_DEMO/x64/Release/
 demo.exe
 ```
 
-**Expected Output**:
-```
-====================================================
-  PCILeech Custom Register API Standard Example
-====================================================
-
-========================================
-  Step 1: FPGA DNA Activation
-========================================
-[PASS] TLP control enabled
-
-========================================
-  Step 2: Basic Register Read/Write
-========================================
-[INFO] Reading initial value of register 0...
-[INFO] Register 0 = 0x00000000
-[INFO] Writing test value 0x12345678 to register 0...
-[PASS] Write successful
-[PASS] Read value matches: 0x12345678
-[INFO] Register read/write function working properly!
-
-... (more test steps output)
-
-====================================================
-  All demo steps completed
-====================================================
-```
-
 ---
 
 ### Important Notes
