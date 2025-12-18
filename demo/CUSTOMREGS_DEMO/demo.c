@@ -13,7 +13,7 @@
  * 注意事项：
  * ⚠️ 必须先执行 DNA 激活，再进行寄存器操作！
  * 原因：FPGA 固件中的 TLP 访问控制在 DNA 验证成功前处于禁用状态
- * 
+ *
  * 环境设置需求文件：
  * - leechcore.h
  * - leechcore.lib
@@ -26,12 +26,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <leechcore.h>
 
-// ============================================================================
-// 宏定义与常量
-// ============================================================================
+ // ============================================================================
+ // 宏定义与常量
+ // ============================================================================
 
-// Custom command definitions (与 device_fpga.c 中的定义保持一致)
+ // Custom command definitions (与 device_fpga.c 中的定义保持一致)
 #define LC_CMD_FPGA_CUSTOM_READ         0x0200000000000000
 #define LC_CMD_FPGA_CUSTOM_WRITE        0x0201000000000000
 
@@ -116,14 +117,14 @@ bool write_custom_register(HANDLE hLC, BYTE regNum, DWORD value) {
  */
 bool step1_get_lchandle(HANDLE* phLC) {
     print_section_header("步骤1: 连接FPGA");
-    
+
     LC_CONFIG cfg = { 0 };
 
     // 初始化 LeechCore 配置
     printf("[INFO] 正在初始化 LeechCore...\n");
     cfg.dwVersion = LC_CONFIG_VERSION;
     cfg.szDevice[0] = 'f'; cfg.szDevice[1] = 'p'; cfg.szDevice[2] = 'g'; cfg.szDevice[3] = 'a';
-    
+
     // 创建 LeechCore 连接
     printf("[INFO] 正在连接 FPGA 设备...\n");
     *phLC = LcCreateEx(&cfg, NULL);
@@ -154,16 +155,16 @@ bool step1_get_lchandle(HANDLE* phLC) {
  */
 bool step2_activate_dna(HANDLE hLC) {
     print_section_header("步骤2: FPGA DNA 激活");
-    
+
     DWORD dna_low, dna_high, tlp_status;
 
     // 读取 FPGA DNA 值
     printf("[INFO] 正在读取 FPGA DNA...\n");
-    if (!read_custom_register(*phLC, REG_DNA_LOW, &dna_low) ||
-        !read_custom_register(*phLC, REG_DNA_HIGH, &dna_high)) {
+    if (!read_custom_register(hLC, REG_DNA_LOW, &dna_low) ||
+        !read_custom_register(hLC, REG_DNA_HIGH, &dna_high)) {
         printf("[FAIL] 无法读取 DNA 值\n");
-        LcClose(*phLC);
-        *phLC = NULL;
+        LcClose(hLC);
+        hLC = NULL;
         return false;
     }
 
@@ -172,17 +173,18 @@ bool step2_activate_dna(HANDLE hLC) {
 
     // 检查 TLP 控制状态
     printf("[INFO] 检查 TLP 控制状态...\n");
-    if (!read_custom_register(*phLC, REG_TLP_CONTROL, &tlp_status)) {
+    if (!read_custom_register(hLC, REG_TLP_CONTROL, &tlp_status)) {
         printf("[FAIL] 无法读取 TLP 控制状态\n");
-        LcClose(*phLC);
-        *phLC = NULL;
+        LcClose(hLC);
+        hLC = NULL;
         return false;
     }
 
     if (tlp_status & 0x01) {
         printf("[PASS] TLP 控制已启用（寄存器 29 = 0x%08X）\n", tlp_status);
         printf("[INFO] DNA 激活成功！可以进行寄存器操作\n");
-    } else {
+    }
+    else {
         printf("[WARN] TLP 控制未启用（寄存器 29 = 0x%08X）\n", tlp_status);
         printf("[WARN] 这可能是因为 FPGA 固件未正确实现 DNA 验证逻辑\n");
         printf("[INFO] 将继续执行，但寄存器操作可能失败\n");
@@ -239,7 +241,8 @@ bool step3_basic_register_rw(HANDLE hLC) {
         printf("[PASS] 读回值匹配: 0x%08X\n", value);
         printf("[INFO] 寄存器读写功能正常！\n");
         return true;
-    } else {
+    }
+    else {
         printf("[FAIL] 读回值不匹配: 期望 0x%08X, 实际 0x%08X\n", test_value, value);
         return false;
     }
@@ -291,7 +294,8 @@ bool step4_multi_register_test(HANDLE hLC) {
 
         if (value == test_values[i]) {
             printf("[PASS] 寄存器 %d = 0x%08X (匹配)\n", test_regs[i], value);
-        } else {
+        }
+        else {
             printf("[FAIL] 寄存器 %d = 0x%08X (期望 0x%08X)\n", test_regs[i], value, test_values[i]);
             all_passed = false;
         }
@@ -345,12 +349,12 @@ void step5_dna_register_access(HANDLE hLC) {
 
     if (read_custom_register(hLC, REG_VERIFY_STATUS, &value)) {
         printf("[INFO] 寄存器 28 (验证状态)   = 0x%08X %s\n", value,
-               (value & 0x01) ? "(成功)" : "(未验证)");
+            (value & 0x01) ? "(成功)" : "(未验证)");
     }
 
     if (read_custom_register(hLC, REG_TLP_CONTROL, &value)) {
         printf("[INFO] 寄存器 29 (TLP控制)    = 0x%08X %s\n", value,
-               (value & 0x01) ? "(已启用)" : "(未启用)");
+            (value & 0x01) ? "(已启用)" : "(未启用)");
     }
 
     if (read_custom_register(hLC, REG_SYSTEM_STATUS, &value)) {
@@ -377,11 +381,11 @@ int main(int argc, char* argv[]) {
     printf("  DNA寄存器:  24-31 (DNA验证专用)\n");
     printf("====================================================\n");
     // 步骤1: 连接FPGA
-    if (!step1_get_lchandle(&hLC)){
+    if (!step1_get_lchandle(&hLC)) {
         printf("\n[错误] 无法获取句柄，程序退出\n");
         return 1;
     }
-    
+
     // 步骤2: DNA 激活（必须先执行）
     if (!step2_activate_dna(hLC)) {
         printf("\n[错误] DNA 激活失败，程序退出\n");
