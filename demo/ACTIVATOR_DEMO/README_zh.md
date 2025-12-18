@@ -2,6 +2,8 @@
 
 # PCILeech FPGA DNA 激活器 - 演示程序
 
+⚠️本项目没有经过编译测试，如有错误，请自行修复。
+
 ### 项目简介
 
 本项目是一个**简单的 DEMO 演示程序**，展示如何使用 LeechCore API 进行 FPGA DNA 验证和激活。
