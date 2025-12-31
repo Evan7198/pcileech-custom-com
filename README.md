@@ -1,5 +1,7 @@
 [English](README.md) | [中文](README_zh.md)
 
+Sincere appreciation to [LatteCode](https://lattecode.cn) for their invaluable support of my project.
+
 # PCILeech Custom Register Communication System
 
 A custom register communication system implementation for PCILeech FPGA, focusing on core DNA security verification and register communication functionality. Built on Xilinx Artix-7 FPGA with high-speed USB 3.0 (FT601) communication, supporting 57-bit hardware DNA-based identity verification.
