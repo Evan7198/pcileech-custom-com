@@ -1,5 +1,7 @@
 [English](README.md) | [中文](README_zh.md)
 
+衷心感谢[LatteCode](https://lattecode.cn)对我项目的宝贵支持。
+
 # PCILeech 自定义寄存器通信系统
 
 本项目是 PCILeech FPGA 自定义寄存器通信系统的实现，专注于核心的 DNA 安全验证与寄存器通信功能。系统基于 Xilinx Artix-7 FPGA 芯片，通过 USB 3.0 (FT601) 实现高速通信，支持基于 57 位硬件 DNA 的身份验证机制。
