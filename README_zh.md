@@ -1,6 +1,8 @@
 [English](README.md) | [中文](README_zh.md)
 
-衷心感谢[LatteCode](https://lattecode.cn)对我项目的宝贵支持。
+<a href="https://lattecode.cn" target="_blank">
+  <img src="https://img.shields.io/badge/Sponsor-LatteCode-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="LatteCode Sponsor">
+</a>
 
 # PCILeech 自定义寄存器通信系统
 
