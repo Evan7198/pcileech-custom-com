@@ -1,11 +1,8 @@
+[English](README.md) | [中文](README_zh.md)
+
 <a href="https://lattecode.cn" target="_blank">
   <img src="https://img.shields.io/badge/Sponsor-LatteCode-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="LatteCode Sponsor">
 </a>
-
-
-[English](README.md) | [中文](README_zh.md)
-
-Sincere appreciation to [LatteCode](https://lattecode.cn) for their invaluable support of my project.
 
 # PCILeech Custom Register Communication System
 
