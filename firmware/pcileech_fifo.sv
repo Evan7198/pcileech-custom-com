@@ -753,7 +753,7 @@ module dna_check (
                 end
             end
         end
-        dna_ready <= dna_ready_pipe;
+        dna_ready <= dna_ready_pipe; //Fixed DNA reading timing issues.
     end
 
     assign i_enable = dna_ready;
